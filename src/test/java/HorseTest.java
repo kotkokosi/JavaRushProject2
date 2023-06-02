@@ -1,17 +1,14 @@
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-public class JunitTest {
+public class HorseTest {
     @Test
     public void testNameInConstructorNameWithNull() {
         Throwable exception = assertThrows(
@@ -74,44 +71,25 @@ public class JunitTest {
     }
 
     @Test
-    public void testConstructorNameWithNull() {
-        Throwable exception = assertThrows(
-                IllegalArgumentException.class, () -> new Hippodrome(null)
-        );
-        assertEquals("Horses cannot be null.", exception.getMessage());
-    }
-
-    @Test
-    public void testConstructorNameWithEmptyList() {
-        Throwable exception = assertThrows(IllegalArgumentException.class, () -> new Hippodrome(new ArrayList<>()));
-        assertEquals("Horses cannot be empty.", exception.getMessage());
-    }
-
-    @Test
-    public void testGetHorse() {
-        List<Horse> horses = new ArrayList<>();
-        for (int i = 0; i < 30; i++) {
-            horses.add(new Horse("Test" + i, 1.0));
+    public void testMethodCallsGetRandomDoubleWithParameters() {
+        try (MockedStatic<Horse> horse = Mockito.mockStatic(Horse.class)) {
+            Horse horse1 = new Horse("test", 0.1);
+            horse1.move();
+            horse.verify(() -> Horse.getRandomDouble(0.2, 0.9));
         }
-
-        Hippodrome hippodrome = new Hippodrome(horses);
-        assertArrayEquals(hippodrome.getHorses().toArray(), horses.toArray());
     }
 
-    @Test
-    public void testGetWinner() {
-        ArrayList<Horse> horses = new ArrayList<>();
-        horses.add(new Horse("Test", 0.1, 0.1));
-        horses.add(new Horse("Test1", 0.1, 1.2));
-        horses.add(new Horse("Test2", 0.1, 0.5));
-        horses.add(new Horse("Test3", 0.1, 0.2));
-        assertEquals(1.2, new Hippodrome(horses).getWinner().getDistance());
-    }
+    @ParameterizedTest
+    @CsvSource({"10.0, 10.0", "20.0, 20.0", "30.0, 30.0"})
+    public void testFormulaInMethod(double distance, double speed) {
+        try(MockedStatic<Horse> horse = Mockito.mockStatic(Horse.class)){
+            horse.when(() -> Horse.getRandomDouble(0.2, 0.9)).thenReturn(0.5);
 
-    @Disabled
-    @Test
-    @Timeout(22)
-    public void testMainExecutionTime() throws Exception{
-        Main.main(new String[]{});
+            Horse horse1 = new Horse("Test", speed, distance);
+            horse1.move();
+
+            assertEquals(distance + speed * 0.5, horse1.getDistance());
+        }
     }
 }
+

@@ -1,0 +1,6 @@
+2023-06-02 17:05:20,303 INFO  Main : Начало скачек. Количество участников: 7
+2023-06-02 17:05:20,921 INFO  Main : Окончание скачек. Победитель: Пегас
+2023-06-02 17:15:18,256 ERROR Hippodrome : ERROR Hippodrome: Horses list is empty
+2023-06-02 17:15:18,266 ERROR Hippodrome : ERROR Hippodrome: Horses list is null
+2023-06-02 17:20:48,790 ERROR Hippodrome : ERROR Hippodrome: Horses list is empty
+2023-06-02 17:20:48,795 ERROR Hippodrome : ERROR Hippodrome: Horses list is null
